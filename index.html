@@ -1,21 +1,84 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Hello, world!</title>
-    <!-- Required meta tags -->
+
+<head>
+    <!-- meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta description="Utilization of www.MusixMatch API">
+    <meta author="">
+    <title>NYTE</title>
+    <!-- React.js -->
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <!-- Babel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <!-- JQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-  </head>
-  <body>
-    <h1>Hello, world!</h1>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <style type="text/css">
+    .jumbotron {
+        background-color: whitesmoke;
+        color: #blue;
+        border-bottom: thin solid #563D7C;
+    }
+    </style>
+</head>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-  </body>
-</html>
+<body>
+    <section id="finder">
+        <div class="jumbotron">
+            <h1 class="col-lg-12">New York Times Explorer</h1>
+            <form class="form-inline needs-validation" novalidate onsubmit="search(event)" id="nyteForm">
+              <div class="form-group mx-sm-2 mb-2">
+                    <div class="col-sm-10">
+                        <input 
+                            type="number"
+                            class="form-control" 
+                            id="searchYear" 
+                            placeholder="Insert year..."
+                            required>
+                    </div>
+                    <div class="col-sm-10">
+                        <input 
+                            type="number"
+                            class="form-control" 
+                            id="searchMonth" 
+                            placeholder="Insert month..."
+                            required>
+                    </div>
+
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Find</button>
+            </form>
+        </div>
+    </section>
+    <section id="results">
+        <div class="container-fluid">
+            <div class="row">
+                <div id="root" class="col-lg-12"></div>
+            </div>
+        </div>
+    </section>
+    <script type="text/babel">
+      var url = "https://api.nytimes.com/svc/archive/v1/2016/3.json";
+          url += '?' + $.param({
+          'api-key': "3435738fa15c4c11ba5502b3f1623b3c"
+          });
+      $.ajax({
+          url: url,
+          method: 'GET',
+          }).done(function(result) {
+          console.log(result);
+          }).fail(function(err) {
+          throw err;
+          });
+     
+    </script>
+</body>
