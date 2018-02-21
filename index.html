@@ -1,84 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <!-- meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta description="Utilization of www.MusixMatch API">
-    <meta author="">
-    <title>NYTE</title>
-    <!-- React.js -->
-    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-    <!-- Babel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
-    <!-- JQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- Bootstrap -->
+    <meta charset="UTF-8" />
+    <title>NYT Explorer</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!-- Custom CSS -->
     <style type="text/css">
-    .jumbotron {
+    #finder {
         background-color: whitesmoke;
-        color: #blue;
-        border-bottom: thin solid #563D7C;
-     }
+        color: darkblue;
+        border-bottom: thin solid grey;
+        padding: 2%;
+    }
     </style>
 </head>
 
 <body>
     <section id="finder">
-        <div class="jumbotron">
-            <h1 class="col-lg-12">New York Times Explorer</h1>
-            <form class="form-inline needs-validation" novalidate onsubmit="search(event)" id="nyteForm">
-              <div class="form-group mx-sm-2 mb-2">
-                    <div class="col-sm-10">
-                        <input 
-                            type="number"
-                            class="form-control" 
-                            id="searchYear" 
-                            placeholder="Insert year..."
-                            required>
-                    </div>
-                    <div class="col-sm-10">
-                        <input 
-                            type="number"
-                            class="form-control" 
-                            id="searchMonth" 
-                            placeholder="Insert month..."
-                            required>
-                    </div>
+    <h1>NYT Explorer</h1>
+    <div class="col-lg-4">
+    <input type="number" class="form-control" id="month" placeholder="Month" min="1" max="4">
+    </div>
+    <div class="col-lg-4">
+    <input type="number" class="form-control" id="year" placeholder="Year" min="1965" max="2018">
+    </div>
+    <div class="col-lg-4">
+    <button class="btn btn-primary mb-2" onclick="find()">Find</button>
+    </section>
+    </div>
 
-                </div>
-                <button type="submit" class="btn btn-primary mb-2">Find</button>
-            </form>
-        </div>
-    </section>
-    <section id="results">
-        <div class="container-fluid">
-            <div class="row">
-                <div id="root" class="col-lg-12"></div>
-            </div>
-        </div>
-    </section>
+    <div id="root"></div>
     <script type="text/babel">
-      var url = "https://api.nytimes.com/svc/archive/v1/2016/3.json";
-          url += '?' + $.param({
-          'api-key': "3435738fa15c4c11ba5502b3f1623b3c"
-          });
-      $.ajax({
-          url: url,
-          method: 'GET',
-          }).done(function(result) {
-          console.log(result);
-          }).fail(function(err) {
-          throw err;
-          });
-     
+
+      class App extends React.Component {
+
+
+        constructor(props){
+          super(props)
+          this.state = {urls: []}
+          this.onSuccess = this.onSuccess.bind(this);
+        }
+
+        onSuccess(data){
+
+          var top20 = []
+          for(var i=0; i<20; i++){
+            var doc = data.response.docs[i];
+            top20.push(doc.web_url);
+          }
+
+          this.setState({urls: top20})
+        }
+
+        componentDidMount(){
+
+          $.ajax({
+            
+              url: 'https://api.nytimes.com/svc/archive/v1/2018/1.json',
+              method: 'GET',
+              data: {
+                  'api-key': "3435738fa15c4c11ba5502b3f1623b3c"
+              },
+              success: this.onSuccess
+          })
+
+        }
+
+        render(){
+          return <Rezultati urls={this.state.urls}/>;
+        }
+      }
+
+
+      function Rezultat(props){
+        return <p>URL: {props.url}</p>;
+      }
+      
+      function Rezultati(props){
+          return (
+            <div>
+              <Rezultat url={props.urls[0]}/>
+              <Rezultat url={props.urls[1]}/>
+            </div>
+          );
+      }
+
+      function find(){
+        const root = document.getElementById('root');
+        ReactDOM.render(<App />,  root);
+      }
+
     </script>
 </body>
+
+</html>
