@@ -1,102 +1,199 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="UTF-8" />
-    <title>NYT Explorer</title>
+<html lang="en">
+  <head>
+    <title>NYTimesExplorer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <style type="text/css">
-    #finder {
-        background-color: whitesmoke;
-        color: darkblue;
-        border-bottom: thin solid grey;
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+      html{
+        font-family: sans-serif;
+      }
+      #header{
+        background-color:#e6e6e6; 
+        padding: 5%;
+      }
+      #footer{
+
+      }
+      .container {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .item {        
+        width: 25%;
         padding: 2%;
-    }
+      }
+      img {
+        width: 100px;
+      }
+      @media all and (max-width: 800px) {
+        .item { 
+          width: 50%;
+          padding: 2%;
+        }
+      }
+
+      @media all and (max-width: 500px) {
+        .item { 
+          width: 100%;
+          padding: 2%;
+        }
+      }
+    
     </style>
-</head>
+    </head>
+    <body>
+      <div id="header">
+      <h1>NY Times article finder</h1>
+      <hr>
+      <h4>Select wanted month and year, and you will get top 20 headlines from selected period:</h4>
+      <label for="month">Month: </label>
+      <input type="number" id="month" min="1" max="12" value="1" >
+      <label for="year">Year: </label>
+      <input type="number" id="year" min=1854 max="2018" value="2018">
+      <button type="button" class="btn btn-primary" onclick="find()" >Find</button>
+      </div>
 
-<body>
-    <section id="finder">
-    <h1>NYT Explorer</h1>
-    <div class="col-lg-4">
-    <input type="number" class="form-control" id="month" placeholder="Month" min="1" max="4">
-    </div>
-    <div class="col-lg-4">
-    <input type="number" class="form-control" id="year" placeholder="Year" min="1965" max="2018">
-    </div>
-    <div class="col-lg-4">
-    <button class="btn btn-primary mb-2" onclick="find()">Find</button>
-    </section>
-    </div>
+      <div id="root"></div>
 
-    <div id="root"></div>
-    <script type="text/babel">
+   <script type="text/babel">
 
-      class App extends React.Component {
-
+      class Rows extends React.Component {
 
         constructor(props){
           super(props)
-          this.state = {urls: []}
-          this.onSuccess = this.onSuccess.bind(this);
+          this.url = props.url;
+          this.snippet = props.snippet;
+          this.title = props.title
+          this.state = {'data': []};
+          this.setData = this.setData.bind(this);
         }
 
-        onSuccess(data){
-
-          var top20 = []
-          for(var i=0; i<20; i++){
-            var doc = data.response.docs[i];
-            top20.push(doc.web_url);
-          }
-
-          this.setState({urls: top20})
+        setData(dataToSet){
+          this.setState({'data': dataToSet});
         }
 
         componentDidMount(){
-
-          $.ajax({
-            
-              url: 'https://api.nytimes.com/svc/archive/v1/2018/1.json',
-              method: 'GET',
-              data: {
-                  'api-key': "3435738fa15c4c11ba5502b3f1623b3c"
-              },
-              success: this.onSuccess
-          })
-
-        }
-
-        render(){
-          return <Rezultati urls={this.state.urls}/>;
-        }
-      }
-
-
-      function Rezultat(props){
-        return <p>URL: {props.url}</p>;
-      }
+          var link = this.url;
+          var apiKey = '5a958af6214a1dbbd93eaf25225110ca26eb66da77328';
+          var url = `http://api.linkpreview.net/?key=${apiKey}&q=${link}`;
       
-      function Rezultati(props){
-          return (
-            <div>
-              <Rezultat url={props.urls[0]}/>
-              <Rezultat url={props.urls[1]}/>
-            </div>
-          );
+        $.ajax({
+              url: url,
+              method: 'GET',
+            }).done(
+              this.setData
+            ).fail(function(err) {
+                throw err;
+          });
+          
+        }
+
+        render() {
+          var data = this.state.data;
+          
+          if(data == 0){
+            return <div className="item">
+                  <a href = {this.url} target='_blank'><h3>{this.title}</h3>
+                  <div> 
+                    <p>{this.snippet}</p>
+                  </div></a>
+                </div>;
+          }
+          
+
+          return <div className="item">
+                <a href= {data.url} target="_blank"><h3>{data.title}</h3></a>
+                <div>
+                    <img src={data.image}/>
+                </div>
+                <div> 
+                  <p>{data.description}</p>
+                </div>
+              </div>;
+        }
+
       }
 
-      function find(){
+      class App extends React.Component {
+        constructor(props){
+          super(props)
+          this.year = props.year;
+          this.month = props.month;
+          this.state = {'data': []};
+          this.setData = this.setData.bind(this);
+        }
+
+
+        setData(dataToSet){
+          this.setState({'data': dataToSet});
+        }
+
+        componentDidMount(){
+          var year = this.year;
+          var month = this.month;
+          var url = `https://api.nytimes.com/svc/archive/v1/${year}/${month}.json`;
+        url += '?' + $.param({
+                  'api-key': "3435738fa15c4c11ba5502b3f1623b3c"
+              });
+        $.ajax({
+              url: url,
+              method: 'GET',
+            }).done(
+              this.setData
+            ).fail(function(err) {
+                throw err;
+          });
+          
+        }
+
+        render() {
+          const resivedData = this.state.data;
+                console.log(resivedData);
+
+          if(resivedData.length == 0){
+                    return <p>Loading...</p>;
+                }
+
+          var top20 = [];
+          
+          for(var i = 0; i < 20; i++){
+            top20.push(             
+                <Rows
+                  key = {i} 
+                  url = {resivedData.response.docs[i].web_url}
+                  snippet =  {resivedData.response.docs[i].snippet}
+                  title = {resivedData.response.docs[i].headline.main}
+                />
+                
+              )
+          }
+
+          var presentation =  <div>
+                                <div className = 'container'>{top20}</div>
+                              </div>;
+
+          return presentation;
+          
+        }
+
+      }
+
+      function find() {
+        
+        const month = document.getElementById('month').value;
+        const year = document.getElementById('year').value;
         const root = document.getElementById('root');
-        ReactDOM.render(<App />,  root);
-      }
-
+        ReactDOM.unmountComponentAtNode(root);
+        ReactDOM.render(<App year = {year} month = {month} />,  root);
+    }
+            
     </script>
-</body>
-
+  </body>
 </html>
