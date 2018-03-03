@@ -1,7 +1,7 @@
 body{
-        font-family: serif;
+        ont-family: serif;
       }
-      #header{
+#header{
         background-image: url("../img/p7.jpg");
         background-repeat: no-repeat;
         background-size: 100%;
@@ -9,32 +9,31 @@ body{
         background-image: 0.5;
       }
 
-      #footer{
+#footer{
         text-align: center;
         padding-top: 20%;
         padding-bottom: 2%;
       }
 
-      .container {
+.container {
         width: 100%;
         display: flex;
         flex-wrap: wrap;
       }
-      .result {        
+.result {        
         width: 25%;
         padding: 2%;
       }
-      img {
+img {
         width: 100px;
       }
-      @media all and (max-width: 800px) {
+@media all and (max-width: 800px) {
         .result { 
           width: 50%;
           padding: 2%;
         }
       }
-
-      @media all and (max-width: 500px) {
+@media all and (max-width: 500px) {
         .result { 
           width: 100%;
           padding: 2%;

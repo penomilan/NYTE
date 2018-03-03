@@ -55,7 +55,7 @@ class Rows extends React.Component {
 
       }
 
-      class App extends React.Component {
+class App extends React.Component {
         constructor(props){
           super(props)
           this.year = props.year;
@@ -119,7 +119,7 @@ class Rows extends React.Component {
 
       }
 
-      function find() {
+function find() {
         
         const month = document.getElementById('month').value;
         const year = document.getElementById('year').value;
