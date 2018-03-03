@@ -1,6 +1,10 @@
 body{
         ont-family: serif;
       }
+button{
+        background-color: #0066cc;
+        color: white;
+}
 #header{
         background-image: url("../img/p7.jpg");
         background-repeat: no-repeat;
